@@ -1,0 +1,68 @@
+from ._base import *
+from pipeGEM.plotting import ComponentComparisonPlotter, ComponentNumberPlotter
+
+
+class ComparisonAnalysis(BaseAnalysis):
+    def __init__(self, log):
+        super().__init__(log)
+
+
+class ComponentComparisonAnalysis(ComparisonAnalysis):
+    def __init__(self, log):
+        super().__init__(log)
+        self._result = None
+
+    def add_result(self, result):
+        self._result = result
+
+    def plot(self,
+             dpi=150,
+             prefix="",
+             *args,
+             **kwargs):
+        pltr = ComponentComparisonPlotter(dpi=dpi, prefix=prefix)
+        pltr.plot(result=self._result,
+                  *args,
+                  **kwargs)
+
+
+class ComponentNumberAnalysis(ComparisonAnalysis):
+    def __init__(self, log):
+        super().__init__(log)
+        self._result = None
+        self.name_order = None
+
+    def add_result(self, result, name_order=None):
+        self._result = result
+        self.name_order = name_order
+
+    def plot(self,
+             dpi=150,
+             prefix="",
+             group="group",
+             name_order=None,
+             *args,
+             **kwargs):
+        pltr = ComponentNumberPlotter(dpi=dpi, prefix=prefix)
+        pltr.plot(result=self._result,
+                  name_order=self.name_order if name_order is None else name_order,
+                  group=group,
+                  *args,
+                  **kwargs)
+
+
+
+class FluxCorrAnalysis(BaseAnalysis):
+    def __init__(self, log):
+        super().__init__(log)
+
+    def add_result(self, result):
+        self._result = result
+
+    def plot(self,
+             dpi=150,
+             prefix="",
+             *args,
+             **kwargs
+             ):
+        pass
