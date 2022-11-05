@@ -1,0 +1,1 @@
+"""Assorted tabletop games"""
