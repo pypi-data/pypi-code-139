@@ -1,0 +1,215 @@
+from enum import Enum
+from pathlib import Path
+from typing import Dict, List
+
+import numpy as np
+from trimesh import Trimesh
+
+from skplan.collision import (
+    SphereCollection,
+    SphereCreatorConfig,
+    create_sphere_collection,
+)
+from skplan.kinematics import (
+    ArticulatedCollisionKinematicsMap,
+    ArticulatedEndEffectorKinematicsMap,
+)
+from skplan.space import Bounds
+
+
+class CollisionMode(Enum):
+    DEFAULT = 0
+    RARM = 1
+    LARM = 2
+    RGRIPPER = 3
+    LGRIPPER = 4
+
+
+class PR2Paramter:
+    @classmethod
+    def urdf_path(cls) -> Path:
+        return Path("~/.skrobot/pr2_description/pr2.urdf")  # temp
+
+    @classmethod
+    def reset_manip_pose_table(cls) -> Dict[str, float]:
+        table = {
+            "torso_lift_joint": 0.3,
+            "l_shoulder_pan_joint": np.deg2rad(75),
+            "l_shoulder_lift_joint": np.deg2rad(50),
+            "l_upper_arm_roll_joint": np.deg2rad(110),
+            "l_elbow_flex_joint": np.deg2rad(-110),
+            "l_forearm_roll_joint": np.deg2rad(-20),
+            "l_wrist_flex_joint": np.deg2rad(-10),
+            "l_wrist_roll_joint": np.deg2rad(-10),
+            "r_shoulder_pan_joint": np.deg2rad(-75),
+            "r_shoulder_lift_joint": np.deg2rad(50),
+            "r_upper_arm_roll_joint": np.deg2rad(-110),
+            "r_elbow_flex_joint": np.deg2rad(-110),
+            "r_forearm_roll_joint": np.deg2rad(20),
+            "r_wrist_flex_joint": np.deg2rad(-10),
+            "r_wrist_roll_joint": np.deg2rad(-10),
+            "head_pan_joint": 0.0,
+            "head_tilt_joint": np.deg2rad(50),
+        }
+        return table
+
+    @classmethod
+    def rarm_joint_names(cls) -> List[str]:
+        return [
+            "r_shoulder_pan_joint",
+            "r_shoulder_lift_joint",
+            "r_upper_arm_roll_joint",
+            "r_elbow_flex_joint",
+            "r_forearm_roll_joint",
+            "r_wrist_flex_joint",
+            "r_wrist_roll_joint",
+        ]
+
+    @classmethod
+    def larm_joint_names(cls) -> List[str]:
+        return [
+            "l_shoulder_pan_joint",
+            "l_shoulder_lift_joint",
+            "l_upper_arm_roll_joint",
+            "l_elbow_flex_joint",
+            "l_forearm_roll_joint",
+            "l_wrist_flex_joint",
+            "l_wrist_roll_joint",
+        ]
+
+    @classmethod
+    def rarm_collision_link_names(cls) -> List[str]:
+        return [
+            "r_shoulder_lift_link",
+            "r_upper_arm_link",
+            "r_forearm_link",
+            "r_gripper_palm_link",
+            "r_gripper_r_finger_link",
+            "r_gripper_l_finger_link",
+        ]
+
+    @classmethod
+    def larm_collision_link_names(cls) -> List[str]:
+        return [
+            "l_shoulder_lift_link",
+            "l_upper_arm_link",
+            "l_forearm_link",
+            "l_gripper_palm_link",
+            "l_gripper_r_finger_link",
+            "l_gripper_l_finger_link",
+        ]
+
+    @classmethod
+    def rgripper_collision_link_names(cls) -> List[str]:
+        return [
+            "r_gripper_palm_link",
+            "r_gripper_r_finger_link",
+            "r_gripper_l_finger_link",
+        ]
+
+    @classmethod
+    def lgripper_collision_link_names(cls) -> List[str]:
+        return [
+            "l_gripper_palm_link",
+            "l_gripper_r_finger_link",
+            "l_gripper_l_finger_link",
+        ]
+
+    @classmethod
+    def base_collision_link_names(cls) -> List[str]:
+        return ["base_link"]
+
+    @classmethod
+    def rarm_kinematics(cls, with_base: bool = False) -> ArticulatedEndEffectorKinematicsMap:
+        endeffector_name = "r_gripper_tool_frame"
+        kinmap = ArticulatedEndEffectorKinematicsMap(
+            cls.urdf_path(), cls.rarm_joint_names(), [endeffector_name], with_base=with_base
+        )
+        return kinmap
+
+    @classmethod
+    def rarm_default_bounds(cls, with_base: bool = False) -> Bounds:
+        if with_base:
+            base_bounds = Bounds(np.array([-0.5, -1.0, -1.0]), np.array([0.5, 1.0, 1.0]))
+        else:
+            base_bounds = None
+        bounds = Bounds.from_urdf(cls.urdf_path(), cls.rarm_joint_names(), base_bounds=base_bounds)
+        return bounds
+
+    @classmethod
+    def get_collision_link_names(cls, mode: CollisionMode):
+        if mode == CollisionMode.DEFAULT:
+            return (
+                cls.rarm_collision_link_names()
+                + cls.larm_collision_link_names()
+                + cls.base_collision_link_names()
+            )
+        elif mode == CollisionMode.RARM:
+            return cls.rarm_collision_link_names()
+        elif mode == CollisionMode.LARM:
+            return cls.larm_collision_link_names()
+        elif mode == CollisionMode.RGRIPPER:
+            return cls.rgripper_collision_link_names()
+        elif mode == CollisionMode.LGRIPPER:
+            return cls.lgripper_collision_link_names()
+        else:
+            assert False
+
+    @classmethod
+    def collision_kinematics(
+        cls, mode: CollisionMode = CollisionMode.DEFAULT, with_base: bool = False
+    ) -> ArticulatedCollisionKinematicsMap:
+        link_wise_sphere_creator = {}
+
+        def create_creator(radius_scale: float):
+            config_tiny = SphereCreatorConfig(tol=0.2, radius_scale=radius_scale)
+
+            def f(mesh: Trimesh) -> SphereCollection:
+                return create_sphere_collection(mesh, config_tiny)
+
+            return f
+
+        link_wise_sphere_creator["r_shoulder_lift_link"] = create_creator(0.8)
+        link_wise_sphere_creator["r_forearm_link"] = create_creator(0.7)
+        link_wise_sphere_creator["r_gripper_palm_link"] = create_creator(0.7)
+        link_wise_sphere_creator["r_gripper_r_finger_link"] = create_creator(0.7)
+        link_wise_sphere_creator["r_gripper_l_finger_link"] = create_creator(0.7)
+        link_wise_sphere_creator["r_forearm_link"] = create_creator(0.9)
+        link_wise_sphere_creator["r_upper_arm_link"] = create_creator(0.9)
+
+        link_wise_sphere_creator["l_shoulder_lift_link"] = create_creator(0.8)
+        link_wise_sphere_creator["l_forearm_link"] = create_creator(0.7)
+        link_wise_sphere_creator["l_gripper_palm_link"] = create_creator(0.7)
+        link_wise_sphere_creator["l_gripper_r_finger_link"] = create_creator(0.7)
+        link_wise_sphere_creator["l_gripper_l_finger_link"] = create_creator(0.7)
+        link_wise_sphere_creator["l_forearm_link"] = create_creator(0.9)
+        link_wise_sphere_creator["l_upper_arm_link"] = create_creator(0.9)
+
+        base_link_sphere_collection = SphereCollection(
+            [
+                np.array([0.23, 0.23, 0.1]),
+                np.array([0.23, -0.23, 0.1]),
+                np.array([0.16, 0.0, 0.1]),
+                np.array([-0.23, 0.23, 0.1]),
+                np.array([-0.23, -0.23, 0.1]),
+                np.array([-0.16, 0.0, 0.1]),
+                np.array([0.0, 0.16, 0.1]),
+                np.array([0.0, -0.16, 0.1]),
+            ],
+            [0.15, 0.15, 0.23, 0.15, 0.15, 0.23, 0.23, 0.23],
+            ["base{}".format(i) for i in range(8)],
+        )
+        link_wise_sphere_creator["base_link"] = lambda mesh: base_link_sphere_collection
+
+        control_joint_names = cls.rarm_joint_names()
+
+        collision_link_names = cls.get_collision_link_names(mode)
+
+        kinmap = ArticulatedCollisionKinematicsMap(
+            cls.urdf_path(),
+            control_joint_names,
+            collision_link_names,
+            link_wise_sphere_creator=link_wise_sphere_creator,
+            with_base=with_base,
+        )
+        return kinmap
