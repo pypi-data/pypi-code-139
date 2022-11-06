@@ -1,0 +1,3 @@
+JS_0 = b'var e=document.createElement("link");e.rel="stylesheet",e.href=`${location.pathname}/page.css`,document.head.append(e);'
+JS_1 = b'var e=document.createElement("script");e.defer=!0,e.src=`${location.pathname}/page.js`,document.head.append(e);'
+JS_2 = b'var e1=document.createElement("script");e1.defer=!0,e1.src=`${location.pathname}/page.js`;var e2=document.createElement("link");e2.rel="stylesheet",e2.href=`${location.pathname}/page.css`,document.head.append(e1),document.head.append(e2);'
