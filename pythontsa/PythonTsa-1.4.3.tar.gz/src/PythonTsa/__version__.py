@@ -1,0 +1,7 @@
+__title__ = "PythonTsa"
+__description__ = "A companion to Applied Time Series Analysis and Forecasting with Python, Springer 2022."
+__url__ = " "
+__version__ = "1.4.3"
+__author__ = "Changquan Huang <h.changquan@icloud.com>"
+__author_email__ = "h.changquan@icloud.com"
+__license__ = "MIT"
