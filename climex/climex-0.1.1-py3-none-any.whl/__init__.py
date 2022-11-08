@@ -1,0 +1,1 @@
+from coolpi._version import __version__
