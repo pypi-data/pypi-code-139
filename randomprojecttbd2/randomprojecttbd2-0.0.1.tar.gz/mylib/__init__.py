@@ -1,0 +1,1 @@
+from main_prog import examp
