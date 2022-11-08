@@ -1,0 +1,74 @@
+import math
+
+from pyrogram.types import (
+    InlineKeyboardButton
+)
+
+from config import Var
+from AyiinXd import (
+    CMD_HELP,
+)
+
+
+hndlr = f"{Var.HNDLR[0]} {Var.HNDLR[1]} {Var.HNDLR[2]} {Var.HNDLR[3]} {Var.HNDLR[4]} {Var.HNDLR[5]}"
+
+
+def HelpXd(page_number, allmodules, prefix):
+    rows = 4
+    column = 2
+    help_modules = []
+    for mod in allmodules:
+        if not mod.startswith("_"):
+            help_modules.append(mod)
+    help_modules = sorted(help_modules)
+    modules = [
+        InlineKeyboardButton(
+            text="{}".format(
+                x.replace("_", " ").title(),
+            ),
+            callback_data="pluginlist-{}|{}".format(x, page_number),
+        )
+        for x in help_modules
+    ]
+    twins = list(zip(modules[::column], modules[1::column]))
+    if len(modules) % column == 1:
+        twins.append((modules[-1],))
+    num_pages = math.ceil(len(twins) / rows)
+    mod_page = page_number % num_pages
+    if len(twins) > rows:
+        twins = twins[
+            mod_page * rows: rows * (mod_page + 1)
+        ] + [
+            (
+                InlineKeyboardButton(
+                    text="❮❮",
+                    callback_data="{}-prev({})".format(
+                        prefix, mod_page
+                    ),
+                ),
+                InlineKeyboardButton(
+                    text="❯❯",
+                    callback_data="{}-next({})".format(
+                        prefix, mod_page
+                    ),
+                ),
+            )
+        ]
+    return twins
+
+
+async def PluginData(modules: str):
+    try:
+        module_data = []
+        module_data.clear()
+
+        for x, y in zip(
+            CMD_HELP.get(modules)[1].keys(),
+            CMD_HELP.get(modules)[1].values()
+        ):
+            module_data.append(
+                f"<b>HNDLR:</b> <code>{hndlr}</code>\n<b>CMD:</b> <code>{x}</code>\n<b>INFO:</b> <code>{y}</code>\n\n"
+            )
+        return module_data
+    except Exception:
+        return None
