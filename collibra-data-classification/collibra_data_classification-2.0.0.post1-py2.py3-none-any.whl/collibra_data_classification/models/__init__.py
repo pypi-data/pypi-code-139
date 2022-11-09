@@ -1,0 +1,27 @@
+# coding: utf-8
+
+# flake8: noqa
+
+# import all models into this package
+# if you have many models here with many references from one model to another this may
+# raise a RecursionError
+# to avoid this, import only the models that you directly need like:
+# from from collibra_data_classification.model.pet import Pet
+# or import this package, but before doing it, use:
+# import sys
+# sys.setrecursionlimit(n)
+
+from collibra_data_classification.model.add_classification_match_request import AddClassificationMatchRequest
+from collibra_data_classification.model.add_classification_matches_request import AddClassificationMatchesRequest
+from collibra_data_classification.model.add_classification_request import AddClassificationRequest
+from collibra_data_classification.model.change_classification_match_request import ChangeClassificationMatchRequest
+from collibra_data_classification.model.change_classification_request import ChangeClassificationRequest
+from collibra_data_classification.model.classification import Classification
+from collibra_data_classification.model.classification_match import ClassificationMatch
+from collibra_data_classification.model.classify_request import ClassifyRequest
+from collibra_data_classification.model.find_classification_matches_request import FindClassificationMatchesRequest
+from collibra_data_classification.model.find_classifications_request import FindClassificationsRequest
+from collibra_data_classification.model.job import Job
+from collibra_data_classification.model.named_resource_reference_impl import NamedResourceReferenceImpl
+from collibra_data_classification.model.paged_response_classification import PagedResponseClassification
+from collibra_data_classification.model.paged_response_classification_match import PagedResponseClassificationMatch
