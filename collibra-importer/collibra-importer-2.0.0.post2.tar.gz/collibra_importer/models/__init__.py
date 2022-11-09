@@ -1,0 +1,55 @@
+# coding: utf-8
+
+# flake8: noqa
+
+# import all models into this package
+# if you have many models here with many references from one model to another this may
+# raise a RecursionError
+# to avoid this, import only the models that you directly need like:
+# from from collibra_importer.model.pet import Pet
+# or import this package, but before doing it, use:
+# import sys
+# sys.setrecursionlimit(n)
+
+from collibra_importer.model.asset_identifier import AssetIdentifier
+from collibra_importer.model.asset_import_command import AssetImportCommand
+from collibra_importer.model.asset_type_identifier import AssetTypeIdentifier
+from collibra_importer.model.attribute_value import AttributeValue
+from collibra_importer.model.category_reference import CategoryReference
+from collibra_importer.model.community_identifier import CommunityIdentifier
+from collibra_importer.model.community_import_command import CommunityImportCommand
+from collibra_importer.model.complex_relation_identifier import ComplexRelationIdentifier
+from collibra_importer.model.complex_relation_import_command import ComplexRelationImportCommand
+from collibra_importer.model.complex_relation_type_identifier import ComplexRelationTypeIdentifier
+from collibra_importer.model.domain_identifier import DomainIdentifier
+from collibra_importer.model.domain_import_command import DomainImportCommand
+from collibra_importer.model.domain_type_identifier import DomainTypeIdentifier
+from collibra_importer.model.external_identifier import ExternalIdentifier
+from collibra_importer.model.find_synchronization_request import FindSynchronizationRequest
+from collibra_importer.model.import_command_reference import ImportCommandReference
+from collibra_importer.model.import_counters import ImportCounters
+from collibra_importer.model.import_csv_in_job_request import ImportCsvInJobRequest
+from collibra_importer.model.import_error import ImportError
+from collibra_importer.model.import_error_paged_response import ImportErrorPagedResponse
+from collibra_importer.model.import_excel_in_job_request import ImportExcelInJobRequest
+from collibra_importer.model.import_json_in_job_request import ImportJsonInJobRequest
+from collibra_importer.model.import_summary import ImportSummary
+from collibra_importer.model.job import Job
+from collibra_importer.model.mapping_identifier import MappingIdentifier
+from collibra_importer.model.mapping_import_command import MappingImportCommand
+from collibra_importer.model.owner import Owner
+from collibra_importer.model.paged_response_import_error import PagedResponseImportError
+from collibra_importer.model.paged_response_synchronization_info import PagedResponseSynchronizationInfo
+from collibra_importer.model.resource_type_summary import ResourceTypeSummary
+from collibra_importer.model.status_identifier import StatusIdentifier
+from collibra_importer.model.subcategory_summary import SubcategorySummary
+from collibra_importer.model.synchronization_batch_csv_in_job_request import SynchronizationBatchCsvInJobRequest
+from collibra_importer.model.synchronization_batch_excel_in_job_request import SynchronizationBatchExcelInJobRequest
+from collibra_importer.model.synchronization_batch_json_in_job_request import SynchronizationBatchJsonInJobRequest
+from collibra_importer.model.synchronization_csv_in_job_request import SynchronizationCsvInJobRequest
+from collibra_importer.model.synchronization_excel_in_job_request import SynchronizationExcelInJobRequest
+from collibra_importer.model.synchronization_finalization_request import SynchronizationFinalizationRequest
+from collibra_importer.model.synchronization_info import SynchronizationInfo
+from collibra_importer.model.synchronization_json_in_job_request import SynchronizationJsonInJobRequest
+from collibra_importer.model.user_group_identifier import UserGroupIdentifier
+from collibra_importer.model.user_identifier import UserIdentifier
