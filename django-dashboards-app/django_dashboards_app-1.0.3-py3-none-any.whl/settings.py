@@ -1,0 +1,3 @@
+
+DASHBOARD_PROJECT_NAME = 'Dashboard Prueba'
+DASHBOARD_REDIRECT = 'prueba/'
