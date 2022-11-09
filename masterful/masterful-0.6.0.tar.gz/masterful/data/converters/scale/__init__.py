@@ -1,0 +1,1 @@
+from masterful.data.converters.scale.convert_annotations import write_metadata
