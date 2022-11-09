@@ -1,0 +1,7 @@
+from collibra_core.paths.workflow_definitions_workflow_definition_workflow_definition_id_configuration_start_form_data.get import ApiForget
+
+
+class WorkflowDefinitionsWorkflowDefinitionWorkflowDefinitionIdConfigurationStartFormData(
+    ApiForget,
+):
+    pass

@@ -1,0 +1,11 @@
+from collibra_core.paths.mappings_external_system_external_system_id_external_entity_external_entity_id.get import ApiForget
+from collibra_core.paths.mappings_external_system_external_system_id_external_entity_external_entity_id.delete import ApiFordelete
+from collibra_core.paths.mappings_external_system_external_system_id_external_entity_external_entity_id.patch import ApiForpatch
+
+
+class MappingsExternalSystemExternalSystemIdExternalEntityExternalEntityId(
+    ApiForget,
+    ApiFordelete,
+    ApiForpatch,
+):
+    pass
