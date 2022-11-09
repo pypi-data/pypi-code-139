@@ -1,0 +1,11 @@
+from collibra_core.paths.mappings_external_system_external_system_id_mapped_resource_mapped_resource_id.get import ApiForget
+from collibra_core.paths.mappings_external_system_external_system_id_mapped_resource_mapped_resource_id.delete import ApiFordelete
+from collibra_core.paths.mappings_external_system_external_system_id_mapped_resource_mapped_resource_id.patch import ApiForpatch
+
+
+class MappingsExternalSystemExternalSystemIdMappedResourceMappedResourceId(
+    ApiForget,
+    ApiFordelete,
+    ApiForpatch,
+):
+    pass

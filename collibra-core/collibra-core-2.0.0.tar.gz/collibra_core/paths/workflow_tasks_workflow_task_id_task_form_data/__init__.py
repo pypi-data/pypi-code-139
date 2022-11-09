@@ -1,0 +1,7 @@
+# do not import all endpoints into this module because that uses a lot of memory and stack frames
+# if you need the ability to import all endpoints from this module, import them with
+# from collibra_core.paths.workflow_tasks_workflow_task_id_task_form_data import Api
+
+from collibra_core.paths import PathValues
+
+path = PathValues.WORKFLOW_TASKS_WORKFLOW_TASK_ID_TASK_FORM_DATA
