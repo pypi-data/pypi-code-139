@@ -1,0 +1,70 @@
+"""
+    项目连接创建处
+    这里的连接是懒加载的方式，使用的时候才会被引用，从而被创建（否则不同数据库的爬虫的连接将会是同一个库）
+
+    sqlalchemy 有两个连接
+        session：sqlalchemy 的连接
+        connect：原始连接
+
+    methods 是包装了一些方法的，部分如下：
+        upsert
+        update
+        execute
+        reverse_table_model：逆向表模型
+"""
+from palp import settings
+from quickdb import RedisConn, RedisClusterConn
+from quickdb import MysqlSQLAlchemyEngine, MysqlSQLAlchemyMethods
+from quickdb import PostgreSQLAlchemyEngine, PostgreSQLAlchemyMethods
+
+# redis 连接
+if settings.REDIS_HOST:
+    if settings.REDIS_CLUSTER_NODES:
+        redis_conn = RedisClusterConn(
+            startup_nodes=settings.REDIS_CLUSTER_NODES,
+            pwd=settings.REDIS_PWD,
+            max_connections=settings.REDIS_MAX_CONNECTIONS,
+            pool_kwargs=settings.REDIS_POOL_CONFIG,
+            conn_kwargs=settings.REDIS_CONFIG
+        ).conn
+    else:
+        redis_conn = RedisConn(
+            host=settings.REDIS_HOST,
+            port=settings.REDIS_PORT,
+            pwd=settings.REDIS_PWD,
+            db=settings.REDIS_DB,
+            pool_kwargs=settings.REDIS_POOL_CONFIG,
+            conn_kwargs=settings.REDIS_CONFIG
+        ).conn
+else:
+    redis_conn = None
+
+# mysql 连接
+if settings.MYSQL_HOST:
+    mysql_conn = MysqlSQLAlchemyEngine(
+        host=settings.MYSQL_HOST,
+        port=settings.MYSQL_PORT,
+        db=settings.MYSQL_DB,
+        user=settings.MYSQL_USER,
+        pwd=settings.MYSQL_PWD,
+        **settings.MYSQL_CONFIG
+    )
+    mysql_method = MysqlSQLAlchemyMethods(engine=mysql_conn)
+else:
+    mysql_conn = None
+    mysql_method = None
+
+# postgresql 连接
+if settings.PG_HOST:
+    pg_conn = PostgreSQLAlchemyEngine(
+        host=settings.PG_HOST,
+        port=settings.PG_PORT,
+        db=settings.PG_DB,
+        user=settings.PG_USER,
+        pwd=settings.PG_PWD,
+        **settings.PG_CONFIG
+    )
+    pg_method = PostgreSQLAlchemyMethods(engine=pg_conn)
+else:
+    pg_conn = None
+    pg_method = None
